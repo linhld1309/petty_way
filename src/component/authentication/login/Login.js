@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, Dimensions, TextInput} from 'react-native';
 
 import Svg, {Image, Circle, ClipPath} from 'react-native-svg';
@@ -8,6 +8,11 @@ import Animated, {Easing} from 'react-native-reanimated';
 import {TapGestureHandler, State} from 'react-native-gesture-handler';
 const {width, height} = Dimensions.get('window');
 import styles from './styles';
+import {useRecoilState, useRecoilValue} from 'recoil';
+import * as action from '../../../recoils/authentication/recoil';
+
+import {db} from '../../../environment/config';
+
 
 const {
   Value,
@@ -59,7 +64,17 @@ function runTiming(clock, value, dest) {
 // const giftLink = 'https://media2.giphy.com/media/MaaaYoyYTMjuIct0wD/giphy.webp';
 const Login = () => {
   const [buttonOpacity] = useState(new Value(1));
+  const text = useRecoilValue(action.textState);
 
+  useEffect(() => {
+    db.collection("users").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+          console.log(`${doc.id} => ${doc.data()}`);
+      });
+  });
+  })
+
+  console.log(text, 'meomeo')
   const onStateChange = event([
     {
       nativeEvent: ({state}) =>
